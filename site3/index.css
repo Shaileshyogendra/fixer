@@ -1,0 +1,63 @@
+body {
+    margin: 0;
+    padding: 8px;
+}
+h1, h2, h3{
+    opacity: 0.8;
+}
+#chrg{
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.text-center{
+    text-align: center;
+}
+.wrapper{
+    background-color: #AAAAAA;
+    margin: 50px;
+    border: solid 5px black;
+}
+.battery{
+    position: absolute;
+    width: 120px;
+    height: 200px;
+    background: white;
+    border: solid 2px #2f2f2f;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.headBat{
+     position: relative;
+    width: 50px;
+    height: 6px;
+    background: white;
+    border: solid 2px #2f2f2f;
+    left: 28%;
+    top: -10px;
+}
+.fill{
+    position: relative;
+    width: 120px;
+    height: 0px;
+    transition: 1s;
+    background: lightgreen;
+    left: 0px;
+    top: 190px;
+    transform-origin: top;
+    transform: rotateX(180deg);
+}
+.percent{
+    position: absolute ;
+    top: 51.9%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+p{
+    position: fixed;
+    bottom: 20px;
+    font-family: "Montserrat";
+}

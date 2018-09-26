@@ -1,0 +1,263 @@
+<!---Created by Moses Odhiambo--->
+
+<!---Special thanks to Hello World--->
+<html>
+<head>
+    <title>Snake Xenzia</title>
+    <link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+    <style>
+        *{padding:0; margin:0;  -webkit-user-select: none;}
+        .snake {position:absolute; top:20px; left:20px; font-family: 'Aclonica';font-size: 25px; color: teal;}
+        .xenzia {color:teal; position:absolute; top:45px; left:70px; font-family: 'Aclonica';font-size: 25px;}
+        .by {position:absolute; top:50px; left:280px; }
+        .img-circle {position:absolute; top:5px; left:430px; height:70px; width:70px; border: 1px solid teal; border-radius: 50%;}
+        canvas {position:absolute; top:80px; left:20px; background: #eee; display: block;}
+        div {width:520px; height:700px; transform: scale(1.0); transform-origin: 0 0;}
+        .left {position:absolute; top:580px; left:20px; padding:0px; width:140px; height:100px; border:none; background:#eee; text-align:center; vertical-align: middle;line-height:100px;}
+        .right {position:absolute; top:580px; left:360px; padding:0px; width:140px; height:100px; border:none; background:#eee; text-align:center; vertical-align: middle;line-height:100px;}
+        .up {position:absolute; top:580px; left:180px; padding:0px; width:160px; height:40px; border:none; background:#eee; text-align:center; vertical-align: middle;line-height:40px;}
+        .down {position:absolute; top:640px; left:180px; padding:0px; width:160px; height:40px; border:none; background:#eee; text-align:center; vertical-align: middle;line-height:40px;}
+        label:active { background-color: teal; opacity: 0.8;}
+    </style>
+</head>
+<body>
+<div id="div">
+<h1 class="snake">SNAKE </h1>
+<h1 class="xenzia">XENZIA</h1>
+<p class="by">by Moses Odhiambo</p>
+<a href="https://www.sololearn.com/Profile/9545431/?ref=app">
+<img alt="MO" class="img-circle" src="https://www.sololearn.com/avatars/f440d25a-71ed-4d54-8f48-a2eabc60d892.jpg"/>
+</a>
+<canvas id="Canvas" width="480px" height="480px" ></canvas></canvas></canvas>
+<label class="left" id="left"><----</label>
+<label class="right" id="right">----></label>
+<label class="up" id="up">up</label>
+<label class="down" id="down">down</label>
+</div>
+<script>
+//audio variables
+var is_playing = 0, aud, themesong, one="http://k003.kiwi6.com/hotlink/wl5s7t819o/marshmello_-_FinD_Me_Bass_Boosted_.mp3", two="http://k003.kiwi6.com/hotlink/4knbi5ayu9/Marshmello_-_Blocks_Official_Music_Video_.mp3", three="http://k003.kiwi6.com/hotlink/5gc6wsm4xa/Warsongs_Flash_Funk_Marshmello_Remix_Music_-_League_of_Legends.mp3", four="http://k003.kiwi6.com/hotlink/wh7j0ca3jd/TRAP_-_The_Legend_Of_Zelda_-_Saria_s_Turn_up_GTA_Remix_.mp3", five="http://k003.kiwi6.com/hotlink/8p93ocrvmw/4B_X_AAZAR_-_Pop_Dat.mp3";
+//pick a random song
+function change(){
+   var options = [one, two, three, four, five]; 
+   themesong= options[(Math.random() * options.length) | 0]
+}
+//play song
+function song(){
+   change();
+   aud=new Audio(themesong);
+   if(!is_playing){
+       aud.play();
+   }
+   is_playing = 1;
+   aud.addEventListener('ended', function() {
+        change();
+        this.currentTime = 0;
+        this.play();
+   }, false);
+}
+var playmusic=confirm("Would you like background music?");
+if (playmusic) alert("⚠️Audio may cause lag on slow networks.⚠️");
+function main(){
+    var res_y=window.screen.availHeight; //y axis pixel count
+    var res_x=window.screen.availWidth; //horizontal pixel count
+    var coeff; 
+    if (res_x>res_y) //set landscape size coefficient
+        coeff=res_y/700;
+    else                   //set portrait size coefficient
+        coeff=res_x/520;
+    document.getElementById("div").style.transform="scale("+coeff+")"; //resize page to fit any resolution
+    var canvas = document.getElementById('Canvas');
+    var con = canvas.getContext('2d');
+    var btnl = document.getElementById("left"); //left label
+    var btnr = document.getElementById("right"); //right label
+    var btnu = document.getElementById("up"); //up label
+    var btnd = document.getElementById("down"); //down label
+    var len = 5; // length of the snake
+    var size = 10; // size of each circle
+    var snake = []; // array with coordinate of each snake's segment
+    var direction = 'right'; // direction of snake
+    var speed = size * 2; // speed of snake
+    var incr=0;
+    var startPos = {
+        x: 100,
+        y: 100
+    }; // start position of snake
+    var timer; // timer for animation
+    var pizza = {
+        x: 32,
+        y: 160,
+        color: 'brown'
+    }; //position and color of pizza
+    var score = 0;
+    //event listener
+    btnl.addEventListener("click", onPressleft, false);
+    btnr.addEventListener("click", onPressright, false);
+    btnu.addEventListener("click", onPressup, false);
+    btnd.addEventListener("click", onPressdown, false);
+    //event handler
+    function onPressleft() {
+        if (direction != 'right') direction = 'left';
+        if (playmusic) song();
+    }
+    function onPressright() {
+        if (direction != 'left') direction = 'right';
+        if (playmusic) song();
+    }
+    function onPressup() {
+        if (direction != 'down') direction = 'up';
+        if (playmusic) song();
+    }
+    function onPressdown() {
+        if (direction != 'up') direction = 'down';
+        if (playmusic) song();
+    }
+    //convert degrees to radians
+    function degrad(deg) {
+        return (deg * Math.PI)/180;
+    }
+    //check if two circles intersect
+    function checkCollission(cir1, cir2) {
+        var d = Math.sqrt(Math.pow(cir2.x - cir1.x, 2) + Math.pow(cir2.y - cir1.y, 2));
+        var r = size * 2;
+        return (d < r);
+    }
+    //place food at random area on canvas
+    function random(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function draw() {
+        //clear canvas
+        con.clearRect(0, 0, canvas.width, canvas.height);
+        //draw snake
+        for (var i = snake.length - 1; i >= 0; i--) {
+            if (i != 0) {
+                // if its not snake's head
+                snake[i].x = snake[i - 1].x;
+                snake[i].y = snake[i - 1].y;
+                con.beginPath();
+                con.arc(snake[i].x, snake[i].y, size, 0, 2 * Math.PI);
+                con.fillStyle='green';
+                con.fill();
+            } 
+            else {
+                // if its snake's head
+                switch (direction) {
+                case 'up':
+                    snake[0].y -= speed;
+                    break;
+                case 'down':
+                    snake[0].y += speed;
+                    break;
+                case 'right':
+                    snake[0].x += speed;
+                    break;
+                case 'left':
+                    snake[0].x -= speed;
+                    break;
+                default:
+                    break;
+                }
+                con.beginPath();
+                con.arc(snake[i].x, snake[i].y, size, 0, 2 * Math.PI);
+                var startAngle=(direction=='left') ? 0 :(direction=='up') ? 90 : (direction=='right') ? 180 : 270;
+                for(var x=startAngle;x<startAngle+360;x+=120){
+                    theta = degrad(x);
+                    con.beginPath();
+                    con.moveTo(snake[i].x, snake[i].y);
+                    con.lineTo(snake[i].x + size * Math.cos(theta), snake[i].y + size * Math.sin(theta));
+                    con.lineWidth = 2;
+                    con.strokeStyle='red';
+                    con.stroke();
+                    con.closePath();
+                }
+            }
+        }
+        //draw food
+        con.fillStyle = pizza.color;
+        con.beginPath();
+        con.arc(pizza.x, pizza.y, size, 0, 2 * Math.PI);
+        con.fill();
+        // check collision between pizza and snake's head
+        if (checkCollission(snake[0], pizza)) {
+            score++;
+            pizza.x = random(30*coeff, canvas.width-30*coeff);
+            pizza.y = random(60*coeff, canvas.height-30*coeff);
+            var myArray = ["red", "yellow", "magenta", "brown", "orange", "purple", "blue"]; 
+            pizza.color= myArray[(Math.random() * myArray.length) | 0]
+            //make snake grow after eating each piece of pizza
+            switch (direction) {
+                case 'up':
+                    snake.push({
+                    x: snake[snake.length - 1].x,
+                    y: snake[snake.length - 1].y + (size * 2)
+                });
+                    break;
+                case 'down':
+                    snake.push({
+                    x: snake[snake.length - 1].x,
+                    y: snake[snake.length - 1].y - (size * 2)
+                });
+                    break;
+                case 'right':
+                    snake.push({
+                    x: snake[snake.length - 1].x - (size * 2),
+                    y: snake[snake.length - 1].y
+                });
+                    break;
+                case 'left':
+                    snake.push({
+                    x: snake[snake.length - 1].x + (size * 2),
+                    y: snake[snake.length - 1].y
+                });
+                    break;
+                default:
+                    break;
+            }
+        }
+        //check for collision of snake's head with the rest of body
+        for (var i=3; i < snake.length; i++) {
+            if((snake[0].y==snake[i].y)&&(snake[0].x==snake[i].x)) {
+                endgame();
+            }
+        }
+        //check for collision with wall
+        if ((snake[0].x<0) || (snake[0].x>canvas.width)){
+            endgame();
+        }
+        if ((snake[0].y<0) || (snake[0].y>canvas.height)){
+            endgame();
+        }
+        //draw score
+        con.font = 20 + "px Calibri";
+        con.fillStyle = "teal";
+        con.fillText("Score: "+score, 10, 25);
+        con.font = 20 + "px Calibri";
+        con.fillStyle = "teal";
+        con.fillText("Level: "+(Math.trunc(score/10)+1), 400, 25);
+    }
+    //end game
+    function endgame(){
+        clearInterval(timer);
+        if (confirm("GAME OVER!\nScore :"+score+"\nPlay again?")) {
+            main();
+        } else {
+            return 0;
+        }
+    }
+    //initialize snake array and start timer
+    function init() {
+        for (var i = 0; i < len; i++) {
+            snake.push({
+                x: startPos.x - (size * 2) * i,
+                y: startPos.y
+            });
+        }
+        timer = setInterval(draw, 150);
+    }
+    init();
+}
+main();
+</script>
+</body>
+</html>
